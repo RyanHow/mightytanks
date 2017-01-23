@@ -8,18 +8,78 @@
     height: 100%;
     margin: 0;
     padding: 0;
+    background-color: black;
   }
 
   #rendercanvas {
     width: 100%;
     height: 100%;
     touch-action: none;
+    position: absolute;
   }
+  #console
+  {
+    padding: 3vmin;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    color: white;
+    font-size: 5.5vmin;
+    font-family: monospace;
+    white-space:pre-line;
+    text-transform: uppercase;
+  }
+#console-line-content::after{
+    content: '_';
+    display: inline;
+    opacity: 1;
+    -webkit-animation: blink 0.7s infinite;
+    -moz-animation: blink 0.7s infinite;
+    animation: blink 0.7s infinite;
+}
+#console::first-line {
+  line-height:0;
+}
+@keyframes blink{
+    0% { opacity:1; }
+    50% { opacity:0; }
+    100% { opacity:1; }
+}
 </style>
 </head>
 <body>
+    <div id="console">
+      <span id="console-line-content"></span>
+    </div>
     <canvas id="rendercanvas"></canvas>
-    <script src="../node_modules/babylonjs/babylon.js"></script>
-    <script src="index.js"></script>
+    <script>
+      var content=
+"`1000`MT Model 8172G`5000`\n"+
+"CPU Online`2000`\n"+
+"Initialising Subsystems`1000`.`1000`.`1000`.`1000`.`1000`OK\n"+
+"Awaiting Command";
+      var index = 0;
+      var ele = document.getElementById("console-line-content");
+      function typeNext() {
+        var text = content.substring(index, index+1);
+        if (text == "`") {
+          var command = "";
+          var lastChar = "";
+          index++;
+          while (lastChar != "`") {
+            command += lastChar;
+            lastChar = content.substring(index, index+1);
+            index++;
+          }
+          setTimeout(typeNext, command);
+        } else {
+          ele.appendChild(document.createTextNode(text));
+          index++;
+          setTimeout(typeNext, 50);
+        }
+      }
+      typeNext();
+    </script>
+    <!--<script src="bundle.js" async></script>-->
 </body>
 </html>
